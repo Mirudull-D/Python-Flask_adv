@@ -1,11 +1,13 @@
 from flask import Blueprint, render_template,jsonify
 from flask import request
 import validators
-from src.constants.http_status_code import HTTP_400_BAD_REQUEST,HTTP_409_CONFLICT,HTTP_200_OK,HTTP_201_CREATED
+from src.constants.http_status_code import HTTP_400_BAD_REQUEST,HTTP_409_CONFLICT,HTTP_200_OK,HTTP_201_CREATED,HTTP_404_NOT_FOUND
 from src.database import Bookmark,db
 from flask_jwt_extended import get_jwt_identity,jwt_required
 
 bookmark = Blueprint('bookmark', __name__)
+
+
 
 @bookmark.route('/home',methods=['GET','POST'])
 @jwt_required()
@@ -43,7 +45,7 @@ def hello_world():
         
         data=[]
 
-        for bookmark in bookmarks:
+        for bookmark in bookmarks.items:
             data.append({
             "id":bookmark.id,
             "url":bookmark.url,
@@ -65,3 +67,23 @@ def hello_world():
 
         return jsonify({"data":data,
                         "meta":meta}),HTTP_200_OK
+    
+@bookmark.get("/<int:id>")
+@jwt_required()
+def bookmarkid(id):
+    current_user=get_jwt_identity()
+    bookmark=Bookmark.query.filter_by(user_id=current_user,id=id).first()
+
+    if not bookmark:
+        return jsonify({
+            "message":'Item not Found'
+        }),HTTP_404_NOT_FOUND
+    return jsonify({
+            "id":bookmark.id,
+            "url":bookmark.url,
+            "short_url":bookmark.short_url,
+            "created_at":bookmark.created_at,
+            "visits":bookmark.visits,
+            "body":bookmark.body
+            }),HTTP_200_OK
+
