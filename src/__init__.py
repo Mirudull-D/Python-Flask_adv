@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_jwt_extended import JWTManager
+from datetime import timedelta
 
 
 db = SQLAlchemy()
@@ -13,6 +14,10 @@ def create_app():
     app.config['SECRET_KEY'] = 'dev'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['JWT_SECRET_KEY']='kjsdbkjdb'
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
+    app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
+
+
     
     
     db.init_app(app)

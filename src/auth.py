@@ -2,10 +2,8 @@ from flask import Blueprint, render_template,request,jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import validators
 from src.database import User,db
-from flask_jwt_extended import create_access_token,create_refresh_token,jwt_required
+from flask_jwt_extended import create_access_token,create_refresh_token,jwt_required,get_jwt_identity
 from src.constants.http_status_code import HTTP_409_CONFLICT, HTTP_406_NOT_ACCEPTABLE, HTTP_201_CREATED, HTTP_200_OK, HTTP_401_UNAUTHORIZED
-
-
 
 
 auth = Blueprint('auth', __name__)
@@ -48,8 +46,8 @@ def login():
     if user:
         passcheck = check_password_hash(user.password, password)
         if passcheck:
-            refresh= create_refresh_token(identity=user.id)
-            access = create_access_token(identity=user.id)
+            refresh= create_refresh_token(identity=str(user.id))
+            access = create_access_token(identity=str(user.id))
 
             return jsonify({
                 'user':{
@@ -62,5 +60,20 @@ def login():
     return jsonify({'error': 'Wrong Credentials'}), HTTP_401_UNAUTHORIZED
 @auth.get('/me')
 @jwt_required()
-def register_page():
-    return 'dakjfndsn'
+def me():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+
+    return jsonify({
+        'username': user.username,
+        'email': user.email
+    }),HTTP_200_OK
+
+@auth.post('/refresh')
+@jwt_required(refresh=True)
+def refresh():
+    user= get_jwt_identity()
+    access = create_access_token(identity=str(user))
+    return jsonify({
+        'access': access
+    }),HTTP_200_OK
