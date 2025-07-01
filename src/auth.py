@@ -1,0 +1,66 @@
+from flask import Blueprint, render_template,request,jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
+import validators
+from src.database import User,db
+from flask_jwt_extended import create_access_token,create_refresh_token,jwt_required
+from src.constants.http_status_code import HTTP_409_CONFLICT, HTTP_406_NOT_ACCEPTABLE, HTTP_201_CREATED, HTTP_200_OK, HTTP_401_UNAUTHORIZED
+
+
+
+
+auth = Blueprint('auth', __name__)
+
+@auth.route('/register', methods=['POST', 'GET'])
+def register():
+    
+    username=request.json['username']
+    email=request.json['email']
+    password=request.json['password']
+
+    if len(username) < 3:
+        return jsonify({'error': 'Username must be at least 3 characters long.'}),HTTP_406_NOT_ACCEPTABLE
+    if len(password) < 6:
+        return jsonify({'error': 'Password must be at least 6 characters long.'}),HTTP_406_NOT_ACCEPTABLE
+    if not validators.email(email):
+        return jsonify({'error': 'Invalid email address.'}),HTTP_406_NOT_ACCEPTABLE
+    if User.query.filter_by(username=username).first():
+        return jsonify({'error': 'Username already exists.'}),HTTP_409_CONFLICT
+    if User.query.filter_by(email=email).first():
+        return jsonify({'error': 'Email already exists.'}),HTTP_409_CONFLICT
+    
+
+    hpass= generate_password_hash(password, method='pbkdf2:sha256')
+    user = User(username=username, email=email, password=hpass)
+    db.session.add(user)
+    db.session.commit()
+    
+    
+
+    return jsonify({'message': 'User registered successfully.',
+                    "user":{"username":username,"email":email}}), HTTP_201_CREATED
+
+@auth.post('/login')
+def login():
+    email = request.json.get('email')
+    password = request.json.get('password')
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        passcheck = check_password_hash(user.password, password)
+        if passcheck:
+            refresh= create_refresh_token(identity=user.id)
+            access = create_access_token(identity=user.id)
+
+            return jsonify({
+                'user':{
+                    'username': user.username,
+                    'email': user.email,
+                    'access_token': access,
+                    'refresh_token': refresh
+                }
+            }),HTTP_200_OK
+    return jsonify({'error': 'Wrong Credentials'}), HTTP_401_UNAUTHORIZED
+@auth.get('/me')
+@jwt_required()
+def register_page():
+    return 'dakjfndsn'

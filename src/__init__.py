@@ -1,23 +1,37 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from os import path
+from flask_jwt_extended import JWTManager
 
-def create_app(test_config=None):
+
+db = SQLAlchemy()
+DB_NAME = 'database.db'
+
+def create_app():
+    
     app= Flask(__name__,instance_relative_config=True)
-    if test_config is None:
-        app.config.from_mapping(
-            SECRET_KEY='osajgajsgls;djhdd;sjklds',
-
-        )
-    else:
-        app.config.from_mapping(test_config)
-
+    app.config['SECRET_KEY'] = 'dev'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    app.config['JWT_SECRET_KEY']='kjsdbkjdb'
+    
+    
+    db.init_app(app)
+    JWTManager(app)
+    
+    
     from .bookmark import bookmark
+    from .auth import auth
+
+    app.register_blueprint(auth,url_prefix='/')
     app.register_blueprint( bookmark,url_prefix='/')
 
-    @app.route('/')
-    def hello_world():
-        mylist=['apple', 'banana', 'cherry']
-        return "hello world"
-
+    from .database import User, Bookmark
+    create_database(app)
 
 
     return app
+def create_database(app):
+    if not path.exists('src/'+DB_NAME):
+        with app.app_context():
+            db.create_all()
+        print('Created Database')
