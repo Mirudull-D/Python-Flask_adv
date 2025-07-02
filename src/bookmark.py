@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template,jsonify
 from flask import request
 import validators
-from src.constants.http_status_code import HTTP_400_BAD_REQUEST,HTTP_409_CONFLICT,HTTP_200_OK,HTTP_201_CREATED,HTTP_404_NOT_FOUND
+from src.constants.http_status_code import HTTP_400_BAD_REQUEST,HTTP_409_CONFLICT,HTTP_200_OK,HTTP_201_CREATED,HTTP_404_NOT_FOUND,HTTP_204_NO_CONTENT
 from src.database import Bookmark,db
 from flask_jwt_extended import get_jwt_identity,jwt_required
 
@@ -13,13 +13,17 @@ bookmark = Blueprint('bookmark', __name__)
 @jwt_required()
 def hello_world():
     current_user=get_jwt_identity()
+   
     if request.method=="POST":
+   
         body=request.json.get('body')
         url=request.json.get('url')
+   
         if not validators.url(url):
             return {
                 "message": "Enter a valid url"
             },HTTP_400_BAD_REQUEST
+   
         if Bookmark.query.filter_by(url=url).first():
             return {
                 "message":"URL already exist"
@@ -70,7 +74,8 @@ def hello_world():
     
 @bookmark.get("/<int:id>")
 @jwt_required()
-def bookmarkid(id):
+def get_bookmark(id):
+    
     current_user=get_jwt_identity()
     bookmark=Bookmark.query.filter_by(user_id=current_user,id=id).first()
 
@@ -87,3 +92,79 @@ def bookmarkid(id):
             "body":bookmark.body
             }),HTTP_200_OK
 
+
+@bookmark.put('/<int:id>')
+@bookmark.patch('/<int:id>')
+@jwt_required()
+def editbookmark(id):
+    
+    current_user=get_jwt_identity()
+    bookmark=Bookmark.query.filter_by(user_id=current_user,id=id).first()
+
+    if not bookmark:
+        return jsonify({
+            "message":'Item not Found'
+        }),HTTP_404_NOT_FOUND
+    
+    body=request.json.get('body')
+    url=request.json.get('url')
+   
+    if not validators.url(url):
+        return {
+                "message": "Enter a valid url"
+            },HTTP_400_BAD_REQUEST
+    
+    bookmark.body=body
+    bookmark.url=url
+    
+    db.session.commit()
+    return jsonify({
+            "id":bookmark.id,
+            "url":bookmark.url,
+            "short_url":bookmark.short_url,
+            "created_at":bookmark.created_at,
+            "visits":bookmark.visits,
+            "body":bookmark.body
+            }),HTTP_200_OK
+
+@bookmark.delete("/<int:id>")
+@jwt_required()
+def delete_bookmark(id):
+    
+    current_user=get_jwt_identity()
+    
+    bookmark=Bookmark.query.filter_by(user_id=current_user,id=id).first()
+
+    if not bookmark:
+       
+        return jsonify({
+            "message":'Item not Found'
+        }),HTTP_404_NOT_FOUND
+    
+    db.session.delete(bookmark)
+    db.session.commit()
+   
+    return jsonify({
+        'message':'Bookmark deleted sucessfully'
+    }),HTTP_204_NO_CONTENT
+
+@bookmark.get('/get_stats')
+@jwt_required()
+def get_stats():
+    current_user=get_jwt_identity()
+    
+    data=[]
+    
+    items=Bookmark.query.filter_by(user_id=current_user).all()
+
+    for item in items:
+        temp={
+            "id":item.id,
+            "url":item.url,
+            "short_url":item.short_url,
+            "created_at":item.created_at,
+            "visits":item.visits,
+            "body":item.body
+            }
+        data.append(temp)
+    return jsonify({'data':data}),HTTP_200_OK

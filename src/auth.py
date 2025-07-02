@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template,request,jsonify
+from flask import Blueprint, render_template,request,jsonify,redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 import validators
-from src.database import User,db
+from src.database import User,db,Bookmark
 from flask_jwt_extended import create_access_token,create_refresh_token,jwt_required,get_jwt_identity
 from src.constants.http_status_code import HTTP_409_CONFLICT, HTTP_406_NOT_ACCEPTABLE, HTTP_201_CREATED, HTTP_200_OK, HTTP_401_UNAUTHORIZED
 
@@ -77,3 +77,13 @@ def refresh():
     return jsonify({
         'access': access
     }),HTTP_200_OK
+
+@auth.get('/<short_url>')
+def redirect_to_url(short_url):
+    bookmark=Bookmark.query.filter_by(short_url=short_url).first_or_404()
+    if bookmark:
+        bookmark.visits = bookmark.visits+1
+        db.session.commit()
+        return redirect(bookmark.url)
+
+    

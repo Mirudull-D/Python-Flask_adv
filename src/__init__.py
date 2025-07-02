@@ -1,8 +1,11 @@
-from flask import Flask
+from flask import Flask,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
+from src.constants.http_status_code import HTTP_404_NOT_FOUND,HTTP_500_INTERNAL_SERVER_ERROR
+from flask_swagger_ui import get_swaggerui_blueprint 
+
 
 
 db = SQLAlchemy()
@@ -34,7 +37,15 @@ def create_app():
     create_database(app)
 
 
+    @app.errorhandler(HTTP_404_NOT_FOUND)
+    def handle_404(e):
+        return jsonify({'error': 'Not found'}), HTTP_404_NOT_FOUND
+
+    @app.errorhandler(HTTP_500_INTERNAL_SERVER_ERROR)
+    def handle_500(e):
+        return jsonify({'error': 'Something went wrong, we are working on it'}), HTTP_500_INTERNAL_SERVER_ERROR
     return app
+
 def create_database(app):
     if not path.exists('src/'+DB_NAME):
         with app.app_context():
