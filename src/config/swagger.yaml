@@ -1,0 +1,106 @@
+swagger: "2.0"
+info:
+  title: Bookmark API
+  description: API for user registration, authentication, and managing bookmarks
+  version: "1.0.0"
+host: "localhost:5000"
+basePath: "/"
+schemes:
+  - http
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      tags:
+        - Auth
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+      responses:
+        "201":
+          description: User registered successfully
+        "409":
+          description: Username or email already exists
+        "406":
+          description: Validation error
+
+  /login:
+    post:
+      summary: Login a user
+      tags:
+        - Auth
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: credentials
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      responses:
+        "200":
+          description: User logged in successfully
+        "401":
+          description: Invalid credentials
+
+  /home:
+    get:
+      summary: Get user's bookmarks
+      tags:
+        - Bookmarks
+      security:
+        - JWT: []
+      parameters:
+        - name: page
+          in: query
+          type: integer
+        - name: per_page
+          in: query
+          type: integer
+      responses:
+        "200":
+          description: A list of bookmarks
+
+    post:
+      summary: Create a new bookmark
+      tags:
+        - Bookmarks
+      security:
+        - JWT: []
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: bookmark
+          schema:
+            type: object
+            properties:
+              url:
+                type: string
+              body:
+                type: string
+      responses:
+        "201":
+          description: Bookmark created
+
+securityDefinitions:
+  JWT:
+    type: apiKey
+    name: Authorization
+    in: header

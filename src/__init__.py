@@ -1,10 +1,12 @@
-from flask import Flask,jsonify
+from flask import Flask,jsonify,render_template
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from src.constants.http_status_code import HTTP_404_NOT_FOUND,HTTP_500_INTERNAL_SERVER_ERROR
 from flask_swagger_ui import get_swaggerui_blueprint 
+from flask_cors import CORS
+
 
 
 
@@ -21,11 +23,28 @@ def create_app():
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
 
 
-    
-    
+    from flasgger import Swagger
+    from flasgger.utils import swag_from
+
+    swagger = Swagger( app, config={
+        'headers': [],
+        'specs': [
+            {
+                'endpoint': 'apispec_1',
+                'route': '/apispec_1.json',
+                'rule_filter': lambda rule: True, 
+                'model_filter': lambda tag: True,  
+            }
+        ],
+        'static_url_path': "/static_swagger",
+        'swagger_ui': True,
+        'specs_route': "/apidocs/"
+    }, template_file='config/swagger.yaml')
+        
     db.init_app(app)
     JWTManager(app)
-    
+    CORS(app)
+
     
     from .bookmark import bookmark
     from .auth import auth
