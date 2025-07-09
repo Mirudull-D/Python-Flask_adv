@@ -1,4 +1,4 @@
-from flask import Flask,jsonify,render_template
+from flask import Flask,jsonify,redirect
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_jwt_extended import JWTManager
