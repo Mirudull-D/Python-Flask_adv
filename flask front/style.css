@@ -1,0 +1,158 @@
+/* style.css */
+
+/* Reset some default styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Body styling */
+body {
+    min-height: 100vh;
+    background: #f5f7fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Container for all content */
+.container {
+    max-width: 920px;
+    width: 100%;
+    background: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* Wrapper for the two forms, side by side */
+.forms-wrapper {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+/* Common form styles */
+form.formlogin,
+form.formregister {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* Form heading */
+form h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 0.75rem;
+    user-select: none;
+}
+
+/* Inputs styling */
+form input {
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline-offset: 2px;
+    outline-color: transparent;
+}
+
+form input::placeholder {
+    color: #999;
+}
+
+/* Input focus style */
+form input:focus {
+    border-color: #3f51b5;
+    box-shadow: 0 0 8px rgba(63, 81, 181, 0.3);
+    outline-color: transparent;
+}
+
+/* Button style inside forms */
+form button {
+    padding: 0.9rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #3f51b5;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.25s ease;
+    user-select: none;
+}
+
+/* Button hover effect */
+form button:hover,
+form button:focus {
+    background-color: #303f9f;
+    box-shadow: 0 6px 12px rgba(48, 63, 159, 0.5);
+    outline: none;
+}
+
+/* Action buttons container at bottom */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* Action buttons styles */
+.action-buttons button {
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3f51b5;
+    background-color: transparent;
+    border: 2px solid #3f51b5;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    user-select: none;
+}
+
+/* Hover and focus effect for action buttons */
+.action-buttons button:hover,
+.action-buttons button:focus {
+    background-color: #3f51b5;
+    color: white;
+    box-shadow: 0 6px 12px rgba(63, 81, 181, 0.5);
+    outline: none;
+}
+
+/* Responsive styles */
+
+/* On smaller devices: stack forms vertically */
+@media (max-width: 800px) {
+    .forms-wrapper {
+        flex-direction: column;
+        gap: 1.8rem;
+    }
+
+    /* Center action buttons on smaller screens */
+    .action-buttons {
+        justify-content: center;
+    }
+}
+
+/* On very small devices: full width inputs and buttons */
+@media (max-width: 400px) {
+    form input,
+    form button,
+    .action-buttons button {
+        width: 100%;
+    }
+}

@@ -1,7 +1,7 @@
 from flask import Flask,jsonify,redirect
 from flask_sqlalchemy import SQLAlchemy
 from os import path
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager,get_jwt,jwt_required
 from datetime import timedelta
 from src.constants.http_status_code import HTTP_404_NOT_FOUND,HTTP_500_INTERNAL_SERVER_ERROR
 from flask_swagger_ui import get_swaggerui_blueprint 
@@ -19,8 +19,10 @@ def create_app():
     app.config['SECRET_KEY'] = 'dev'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['JWT_SECRET_KEY']='kjsdbkjdb'
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
+    app.config["JWT_BLACKLIST_ENABLED"] = True
+    app.config["JWT_BLACKLIST_TOKEN_CHECKS"] = ["access", "refresh"]
 
 
     from flasgger import Swagger
@@ -42,7 +44,7 @@ def create_app():
     }, template_file='config/swagger.yaml')
         
     db.init_app(app)
-    JWTManager(app)
+    jwt=JWTManager(app)
     CORS(app)
 
     
@@ -56,13 +58,25 @@ def create_app():
     create_database(app)
 
 
+
+    
     @app.errorhandler(HTTP_404_NOT_FOUND)
     def handle_404(e):
-        return jsonify({'error': 'Not found'}), HTTP_404_NOT_FOUND
+        return jsonify({'error': 'URL NOT FOUND'}), HTTP_404_NOT_FOUND
 
     @app.errorhandler(HTTP_500_INTERNAL_SERVER_ERROR)
     def handle_500(e):
         return jsonify({'error': 'Something went wrong, we are working on it'}), HTTP_500_INTERNAL_SERVER_ERROR
+    
+    from src.blacklist import BLACKLIST
+    @jwt.token_in_blocklist_loader
+    def check_if_token_in_blacklist(jwt_header, jwt_payload):
+        return jwt_payload["jti"] in BLACKLIST
+    
+    from flask_jwt_extended import get_jwt, jwt_required
+
+    
+
     return app
 
 def create_database(app):

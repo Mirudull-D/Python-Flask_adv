@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask</title>
+    <link rel="stylesheet" href="style.css">    
+</head>
+<body>
+    <div class="container">
+        <form class="formregister">
+            <h1>Register</h1>
+            <input type="text" name="username" placeholder="Enter your name" required>
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <input type="password" name="password" placeholder="Enter your password" required>
+            <button type="submit">Register</button>
+        </form>
+        <form class="formlogin">
+            <h1>Login</h1>
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <input type="password" name="password" placeholder="Enter your password" required>
+            <button type="submit">Login</button>
+        </form>
+        <div class="action-buttons">
+            <button type="button" onclick="access()">Access Token</button>
+            <button type="button" onclick="refresh()">Refresh Token</button>
+            <button type="button" onclick="logout()">Logout</button>
+            <button type="button" onclick="send()">Send Request</button>
+            <button type="button" onclick="main()">Main Page</button>
+            
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

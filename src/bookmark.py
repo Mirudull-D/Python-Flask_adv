@@ -1,15 +1,15 @@
-from flask import Blueprint, render_template,jsonify
+from flask import Blueprint,jsonify
 from flask import request
 import validators
 from src.constants.http_status_code import HTTP_400_BAD_REQUEST,HTTP_409_CONFLICT,HTTP_200_OK,HTTP_201_CREATED,HTTP_404_NOT_FOUND,HTTP_204_NO_CONTENT
 from src.database import Bookmark,db
 from flask_jwt_extended import get_jwt_identity,jwt_required
 
+
 bookmark = Blueprint('bookmark', __name__)
 
 
-
-@bookmark.route('/home',methods=['GET','POST'])
+@bookmark.route('/',methods=['GET','POST'])
 @jwt_required()
 def hello_world():
     current_user=get_jwt_identity()
@@ -24,7 +24,7 @@ def hello_world():
                 "message": "Enter a valid url"
             },HTTP_400_BAD_REQUEST
    
-        if Bookmark.query.filter_by(url=url).first():
+        if Bookmark.query.filter_by(url=url,user_id=current_user).first():
             return {
                 "message":"URL already exist"
             },HTTP_409_CONFLICT
@@ -168,3 +168,6 @@ def get_stats():
             }
         data.append(temp)
     return jsonify({'data':data}),HTTP_200_OK
+
+
+

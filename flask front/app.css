@@ -1,0 +1,412 @@
+/* app.css */
+
+/* Reset some default styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Body styling */
+body {
+    min-height: 100vh;
+    background: #f5f7fa;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* align to top, since content may scroll */
+    padding: 20px;
+}
+
+/* Main container */
+.container {
+    max-width: 920px;
+    width: 100%;
+    background: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* Page heading */
+.container > h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+    user-select: none;
+    text-align: center;
+}
+
+/* Bookmark form */
+#bookmarkForm {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Inputs inside form */
+#bookmarkForm input[type="text"],
+#bookmarkForm input[type="url"] {
+    flex: 1 1 220px;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline-offset: 2px;
+    outline-color: transparent;
+}
+
+#bookmarkForm input::placeholder {
+    color: #999;
+}
+
+/* Input focus style */
+#bookmarkForm input:focus {
+    border-color: #3f51b5;
+    box-shadow: 0 0 8px rgba(63, 81, 181, 0.3);
+    outline-color: transparent;
+}
+
+/* Submit button in form */
+#bookmarkForm button {
+    padding: 0.9rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #3f51b5;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.25s ease;
+    user-select: none;
+    white-space: nowrap;
+}
+
+#bookmarkForm button:hover,
+#bookmarkForm button:focus {
+    background-color: #303f9f;
+    box-shadow: 0 6px 12px rgba(48, 63, 159, 0.5);
+    outline: none;
+}
+
+/* Actions buttons container */
+.actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Buttons inside actions */
+.actions button {
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3f51b5;
+    background-color: transparent;
+    border: 2px solid #3f51b5;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.actions button:hover,
+.actions button:focus {
+    background-color: #3f51b5;
+    color: white;
+    box-shadow: 0 6px 12px rgba(63, 81, 181, 0.5);
+    outline: none;
+}
+
+/* Search Id input - small numeric input styling */
+#searchId {
+    width: 100px;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline-offset: 2px;
+    outline-color: transparent;
+}
+
+#searchId::placeholder {
+    color: #999;
+}
+
+#searchId:focus {
+    border-color: #3f51b5;
+    box-shadow: 0 0 8px rgba(63, 81, 181, 0.3);
+    outline-color: transparent;
+}
+
+/* Pagination controls */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pagination button {
+    padding: 0.85rem 1rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #3f51b5;
+    background-color: transparent;
+    border: 2px solid #3f51b5;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    user-select: none;
+}
+
+.pagination button:hover,
+.pagination button:focus {
+    background-color: #3f51b5;
+    color: white;
+    box-shadow: 0 6px 12px rgba(63, 81, 181, 0.5);
+    outline: none;
+}
+
+#pageInfo {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #3f51b5;
+    min-width: 80px;
+    text-align: center;
+    user-select: none;
+}
+
+/* Message area styling */
+.message {
+    color: #222;
+    background: #f0f4ff;
+    border-radius: 8px;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    min-height: 2.5rem;
+    text-align: center;
+    user-select: none;
+}
+
+/* Bookmarks container */
+#bookmarks {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+}
+
+/* Single bookmark card */
+.bookmark {
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    padding: 1rem 1.5rem;
+    user-select: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Highlight description/title */
+.bookmark strong {
+    font-size: 1.2rem;
+    color: #222;
+}
+
+/* URL link styling */
+.bookmark a {
+    color: #3f51b5;
+    text-decoration: none;
+    font-size: 1rem;
+    word-break: break-word;
+}
+
+.bookmark a:hover,
+.bookmark a:focus {
+    text-decoration: underline;
+}
+
+/* Metadata line */
+.bookmark .meta {
+    font-size: 0.85rem;
+    color: #666;
+    user-select: text; /* allow selecting meta information */
+}
+
+/* Bookmark action buttons */
+.bookmark > button {
+    padding: 0.4rem 0.7rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #3f51b5;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+    align-self: flex-start;
+    user-select: none;
+    margin-top: 0.6rem;
+    width: fit-content;
+}
+
+.bookmark > button:hover,
+.bookmark > button:focus {
+    background-color: #303f9f;
+    box-shadow: 0 6px 12px rgba(48, 63, 159, 0.5);
+    outline: none;
+}
+
+/* Edit section styling */
+[id^="editSection"] {
+    margin-top: 1rem;
+    display: none; /* default hidden */
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+/* Update textarea */
+[id^="editBody"] {
+    resize: vertical;
+    min-height: 60px;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline-offset: 2px;
+    outline-color: transparent;
+    font-family: inherit;
+}
+
+[id^="editBody"]:focus {
+    border-color: #3f51b5;
+    box-shadow: 0 0 8px rgba(63, 81, 181, 0.3);
+    outline-color: transparent;
+}
+
+/* Update URL input */
+[id^="editUrl"] {
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline-offset: 2px;
+    outline-color: transparent;
+}
+
+[id^="editUrl"]:focus {
+    border-color: #3f51b5;
+    box-shadow: 0 0 8px rgba(63, 81, 181, 0.3);
+    outline-color: transparent;
+}
+
+/* Save button inside edit */
+[id^="editSection"] button {
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #3f51b5;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.25s ease;
+    align-self: flex-start;
+    user-select: none;
+}
+
+[id^="editSection"] button:hover,
+[id^="editSection"] button:focus {
+    background-color: #303f9f;
+    box-shadow: 0 6px 12px rgba(48, 63, 159, 0.5);
+    outline: none;
+}
+
+/* Stats section */
+#stats {
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    color: #222;
+    user-select: none;
+    line-height: 1.5;
+}
+
+/* Logout button - placed at bottom, styled like action buttons */
+#logout {
+    padding: 0.85rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #3f51b5;
+    background-color: transparent;
+    border: 2px solid #3f51b5;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    user-select: none;
+    align-self: center;
+    max-width: 200px;
+    margin-top: 1.5rem;
+}
+
+#logout:hover,
+#logout:focus {
+    background-color: #3f51b5;
+    color: white;
+    box-shadow: 0 6px 12px rgba(63, 81, 181, 0.5);
+    outline: none;
+}
+
+/* Responsive styles */
+
+/* Stack form on smaller devices */
+@media (max-width: 720px) {
+    #bookmarkForm {
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    #bookmarkForm button {
+        width: 100%;
+    }
+
+    .actions {
+        justify-content: center;
+    }
+
+    .actions button, #searchId {
+        flex: 1 1 100px;
+    }
+
+    #searchId {
+        width: auto;
+    }
+}
+
+/* On very small devices: inputs and buttons full width */
+@media (max-width: 400px) {
+    #bookmarkForm input,
+    #bookmarkForm button,
+    .actions button,
+    #searchId {
+        width: 100%;
+        flex: none;
+    }
+}

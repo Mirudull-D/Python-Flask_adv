@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flask</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Bookmark Manager</h1>
+
+    <form id="bookmarkForm">
+      <input type="text" id="body" placeholder="Description" required />
+      <input type="url" id="url" placeholder="URL (https://...)" required />
+      <button type="submit">Add</button>
+    </form>
+
+    <div class="actions">
+      <button id="loadAll">Refresh</button>
+      <button id="loadStats">Stats</button>
+      <input type="number" id="searchId" placeholder="ID lookup"/>
+      <button id="getById">Search</button>
+    </div>
+
+    <div class="pagination">
+      <button id="prevPage">⬅️</button>
+      <span id="pageInfo"></span>
+      <button id="nextPage">➡️</button>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <div id="bookmarks"></div>
+    <div id="stats"></div>
+    <button id="logout">Logout</button>
+  </div>
+  
+
+  <script  src="app.js"></script>
+</body>
+</html>

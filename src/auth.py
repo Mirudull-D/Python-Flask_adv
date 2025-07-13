@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template,request,jsonify,redirect
+from flask import Blueprint,request,jsonify,redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 import validators
 from src.database import User,db,Bookmark
-from flask_jwt_extended import create_access_token,create_refresh_token,jwt_required,get_jwt_identity
+from flask_jwt_extended import create_access_token,create_refresh_token,jwt_required,get_jwt_identity,get_jwt
 from src.constants.http_status_code import HTTP_409_CONFLICT, HTTP_406_NOT_ACCEPTABLE, HTTP_201_CREATED, HTTP_200_OK, HTTP_401_UNAUTHORIZED
-
+from src.blacklist import BLACKLIST
 
 auth = Blueprint('auth', __name__)
 
@@ -48,15 +48,18 @@ def login():
         if passcheck:
             refresh= create_refresh_token(identity=str(user.id))
             access = create_access_token(identity=str(user.id))
-
-            return jsonify({
+            resp={
                 'user':{
                     'username': user.username,
                     'email': user.email,
                     'access_token': access,
                     'refresh_token': refresh
                 }
-            }),HTTP_200_OK
+            }
+
+
+
+            return jsonify(resp),HTTP_200_OK
     return jsonify({'error': 'Wrong Credentials'}), HTTP_401_UNAUTHORIZED
 @auth.get('/me')
 @jwt_required()
@@ -73,10 +76,11 @@ def me():
 @jwt_required(refresh=True)
 def refresh():
     user= get_jwt_identity()
-    access = create_access_token(identity=str(user))
-    return jsonify({
-        'access': access
-    }),HTTP_200_OK
+    access_token = create_access_token(identity=str(user))
+    resp={
+        'access_token': access_token
+    }
+    return jsonify(resp),HTTP_200_OK
 
 @auth.get('/<short_url>')
 def redirect_to_url(short_url):
@@ -85,5 +89,12 @@ def redirect_to_url(short_url):
         bookmark.visits = bookmark.visits+1
         db.session.commit()
         return redirect(bookmark.url)
+
+@auth.route("/logout", methods=["POST"])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    BLACKLIST.add(jti)
+    return jsonify(msg="Logged out successfully"), 200
 
     
