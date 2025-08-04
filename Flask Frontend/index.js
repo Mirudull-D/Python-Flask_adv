@@ -1,5 +1,6 @@
+const API ="http://127.0.0.1:5000"
 function send(){
-fetch("http://127.0.0.1:5000/me", {
+fetch(`${API}/me`, {
   method: "GET",
   headers: {
     "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
@@ -16,7 +17,7 @@ fetch("http://127.0.0.1:5000/me", {
 
 
 const logout=()=>{
-fetch("http://127.0.0.1:5000/logout", {
+fetch(`${API}/logout`, {
   method: "POST",
   headers: {
     "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
@@ -38,7 +39,7 @@ fetch("http://127.0.0.1:5000/logout", {
 
 const login = (data)=>{
   console.log(`logincalled`)
-  fetch('http://127.0.0.1:5000/login', {
+  fetch(`${API}/login`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ const login = (data)=>{
 const register=(data)=>{
   let temppass=data.password;
   let tempemail=data.email;
-  fetch('http://127.0.0.1:5000/register', {
+  fetch(`${API}/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -91,7 +92,7 @@ const access = ()=>{
 const refresh = () => {
 const refreshToken = localStorage.getItem('refreshToken');
 console.log(refreshToken)
-fetch("http://127.0.0.1:5000/refresh", {
+fetch(`${API}/refresh`, {
   method: "POST",
   headers: {
     "Authorization": `Bearer ${refreshToken}`
